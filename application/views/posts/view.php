@@ -64,15 +64,23 @@ $obj_post = (object) $post;
                 list post
                 </span>
             </a>
-        </div>
+        </div><!--//#content-->
+
         <div id="comment">
             <div id="respond" class="comment-respond">
                 <h3 id="reply-title" class="comment-reply-title">
                     Reply
                 </h3>
-                <form action="<?php echo _BASE_URL_;?>/comment/add/<?php echo $obj_post->id; ?>" method="post" id="commentform" class="comment-form">
-                    <input id="name" name="name" type="text" placeholder="Name (required)" value="" size="30" aria-required="true">
-                    <input id="email" name="email" type="text" placeholder="Email (required)" value="" size="30" aria-required="true">
+                <form action="<?php echo _BASE_URL_;?>/comments/add/<?php echo $obj_post->id; ?>" method="post" id="commentform" class="comment-form">
+                    <?php
+                    $type = "text";
+                    if(is_login()) {
+                        echo "by ".$_SESSION['LOGIN_NAME'];
+                        $type = 'hidden';
+                    }
+                    ?>
+                    <input id="name" name="name" type="<?php echo $type;?>" placeholder="Name (required)" value="<?php echo (is_login() ? $_SESSION['LOGIN_NAME'] : "");?>" size="30" aria-required="true" />
+                    <input id="email" name="email" type="<?php echo $type;?>" placeholder="Email (required)" value="<?php echo (is_login() ? $_SESSION['LOGIN_EMAIL'] : "");?>" size="30" aria-required="true" />
                     <input id="website" name="website" type="text" placeholder="Website" value="" size="30">
                     <p class="comment-form-comment">
                         <textarea id="content" placeholder="Comment..." name="content" cols="45" rows="8" aria-required="true"></textarea>
@@ -80,6 +88,7 @@ $obj_post = (object) $post;
                     <p class="form-submit">
                         <input name="submit" type="submit" id="submit-comment" value="Submit">
                         <input type="hidden" name="post_id" value="<?php echo $obj_post->id?>" id="post_id">
+                        <input type="hidden" name="parent_id" value="0" id="parent_id">
                         <?php
                         if(is_login()) echo '<input type="hidden" name="user_id" id="user_id" value="'.$_SESSION['LOGIN_ID'].'">';
                         ?>
@@ -87,5 +96,30 @@ $obj_post = (object) $post;
                     </p>
                 </form>
             </div>
-        </div>
-    </div>
+            <div id="comment-list"></div>
+        </div><!--//#comment-->
+    </div><!--//#wrapper-->
+
+    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    <script>
+        $(function(){
+            getComments(<?php echo $obj_post->id?>, 1, "comment-list");
+
+        });
+
+        function getComments(post_id, thispage, target){
+            //console.log(data);
+            $.ajax({
+                type: "POST",
+                url: "<?php echo _BASE_URL_;?>/comments/viewall/"+post_id+"/"+thispage,
+                dataType: "html"
+            }).success(function( data ) {
+                    if(data){
+                        $('#'+target).html(data);
+                    }
+                }).fail(function(response){
+                    //console.log(printr_json(response));
+                });
+        }
+
+    </script>
