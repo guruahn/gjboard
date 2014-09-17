@@ -17,5 +17,4 @@ define('_BASE_URL_', '');
 $url = ( isset($_GET['url']) ? $_GET['url'] : _BASE_URL_."/posts/view" );
 $is_API = false;
 $is_MANAGER = false;
-echo "test";
 require_once (ROOT . DS . 'library' . DS . 'bootstrap.php');
