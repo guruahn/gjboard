@@ -62,7 +62,21 @@ class CommentsController extends Controller {
             "ip" => $_SERVER['SERVER_ADDR']
         );
         $id = $this->Comment->add($data);
-        redirect(_BASE_URL_."/posts/view/".$_POST['post_id']."#".$id);
+        redirect(_BASE_URL_."/posts/view/".$_POST['post_id']."#comment-".$id);
+    }
+
+    function del($id){
+        if(!is_login()){
+            msg_page('After login you can use.', _BASE_URL_."/users/loginForm");
+            exit;
+        }
+        if( $this->Comment->del($id) ){
+            msg_page('Success delete post.');
+            exit;
+        }else{
+            msg_page('Cannot delete this post.');
+            exit;
+        }
     }
 
 }

@@ -21,7 +21,14 @@ if(isset($comments)){
             </a>
 
             <div class="comment"><?php echo $obj_comment->content; ?></div>
-            <p><?php echo $obj_comment->register_date; ?> written</p>
+            <p>
+                <span><?php echo $obj_comment->register_date; ?> written</span>
+                <?php
+                if(is_login() && $_SESSION['LOGIN_ID'] == $obj_comment->user_id ){
+                    echo '<span><a href="'._BASE_URL_.'/comments/del/'.$obj_comment->id.'">del</a></span>';
+                }
+                ?>
+            </p>
             <?php
             if(isset($obj_comment->children)){
                 foreach ( $obj_comment->children as $children ){
@@ -32,7 +39,14 @@ if(isset($comments)){
                             <?php echo $obj_children->name; ?>
                         </a>
                         <div class="comment"><?php echo $obj_children->content; ?></div>
-                        <p><?php echo $obj_children->register_date; ?> written</p>
+                        <p>
+                            <span><?php echo $obj_children->register_date; ?> written</span>
+                            <?php
+                            if(is_login() && $_SESSION['LOGIN_ID'] == $obj_children->user_id ){
+                                echo '<span><a href="'._BASE_URL_.'/comments/del/'.$obj_children->id.'">del</a></span>';
+                            }
+                            ?>
+                        </p>
                     </div>
             <?php
                 }
