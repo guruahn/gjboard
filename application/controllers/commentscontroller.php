@@ -49,6 +49,24 @@ class CommentsController extends Controller {
     }
 
     function add(){
+        $result = array(
+            'result'=>0,
+            'message'=>'',
+            'comment'=>''
+        );
+
+        //Check login
+        if(!is_login()){
+            $result['message'] = 'After login you can use.';
+            echo json_encode($result);
+            exit;
+        }
+
+        if( !isset($_POST['name']) || !isset($_POST['email']) || !isset($_POST['content']) ){
+            $result['message'] = 'You missed a required field.';
+            echo json_encode($result);
+            exit;
+        }
         $data = Array (
             "name" => $_POST['name'],
             "email" => $_POST['email'],
@@ -62,7 +80,11 @@ class CommentsController extends Controller {
             "ip" => $_SERVER['SERVER_ADDR']
         );
         $id = $this->Comment->add($data);
-        redirect(_BASE_URL_."/posts/view/".$_POST['post_id']."#comment-".$id);
+        if($id){
+            $result['result'] = 1;
+            echo json_encode($result);
+        }
+
     }
 
     function del($id){

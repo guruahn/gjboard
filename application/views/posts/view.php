@@ -67,11 +67,13 @@ $obj_post = (object) $post;
         </div><!--//#content-->
 
         <div id="comment">
-            <div id="respond" class="comment-respond">
-                <h3 id="reply-title" class="comment-reply-title">
-                    Reply
-                </h3>
-                <form action="<?php echo _BASE_URL_;?>/comments/add/<?php echo $obj_post->id; ?>" method="post" id="commentform" class="comment_form">
+            <h3 id="reply-title" class="comment-reply-title">
+                Reply
+            </h3>
+            <a href="#" class="comment_add" data-parent-id="0">add reply</a>
+            <div id="comment-list"></div>
+            <div id="add-comment-popup" style="display: none;">
+                <form action="<?php echo _BASE_URL_;?>/comments/add" method="post" id="commentform" class="comment_form">
                     <?php
                     $type = "text";
                     if(is_login()) {
@@ -95,8 +97,8 @@ $obj_post = (object) $post;
 
                     </p>
                 </form>
-            </div>
-            <div id="comment-list"></div>
+            </div><!--//#comment-list-->
+
             <?php
             if( is_login() ){
             ?>
@@ -115,7 +117,7 @@ $obj_post = (object) $post;
                         <input type="hidden" name="comment-id" value="" />
                     </p>
                 </form>
-            </div><!--//#edit-comment-shell-->
+            </div><!--//#edit-comment-popup-->
             <?php }?>
         </div><!--//#comment-->
     </div><!--//#wrapper-->
@@ -127,6 +129,12 @@ $obj_post = (object) $post;
         $(function(){
             getComments(<?php echo $obj_post->id?>, 1, "comment-list");
 
+            //commetn add form popup
+            $('#comment').on('click', '.comment_add', function(){
+                var parent_id = $(this).attr('data-parent-id');
+                popupAddComment(parent_id);
+                return false;
+            });
             //comment edit form popup
             $('#comment-list').on('click', '.comment_edit', function(){
                 var comment_id = $(this).attr('data-id');
@@ -142,11 +150,35 @@ $obj_post = (object) $post;
                 var data = $(this).serializeArray();
                 //console.log(printr_json(postData));
                 var action = $(this).attr("action");
-                editComments(action, data);
+                actionComments(action, data, "commentEditform");
+                return false;
+            });
+
+            //comment add
+            $('#commentform').submit(function(){
+                var data = $(this).serializeArray();
+                var action = $(this).attr("action");
+                actionComments(action, data, "commentform");
                 return false;
             });
 
         });
+
+        function popupAddComment(parent_id){
+            $('#add-comment-popup').bPopup({
+                closeClass:'b-close',
+                modalClose: false,
+                transitionClose: 'fadeIn',
+                speed: 250,
+                zIndex: 9000,
+                position :['auto','auto'],
+                follow: [false, false],
+                //positionStyle : 'absolute',
+                onOpen: function() {
+                    $('#add-comment-popup input[name=parent_id]').val(parent_id);
+                }
+            });
+        }
 
         function popupEditComment(website, comment_id, comment_content){
             $('#edit-comment-popup').bPopup({
@@ -180,7 +212,7 @@ $obj_post = (object) $post;
             });
         }
 
-        function editComments(action, data){
+        function actionComments(action, data, target){
             //console.log(data);
             $.ajax({
                 type: "POST",
@@ -188,15 +220,15 @@ $obj_post = (object) $post;
                 data: data,
                 dataType: "json"
             }).success(function( data ) {
-                    if(data.result){
-                        getComments(<?php echo $obj_post->id?>, 1, "comment-list");
-                        $('#edit-comment-popup').bPopup().close();
-                    }else{
-                        alert(data.message);
-                    }
-                }).fail(function(response){
-                    console.log(printr_json(response));
-                });
+                if(data.result){
+                    getComments(<?php echo $obj_post->id?>, 1, "comment-list");
+                    $('#'+target).bPopup().close();
+                }else{
+                    alert(data.message);
+                }
+            }).fail(function(response){
+                console.log(printr_json(response));
+            });
         }
 
     </script>

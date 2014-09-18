@@ -29,6 +29,7 @@ if(isset($comments)){
                     echo '<span><a href="#" class="comment_edit" data-id="'.$obj_comment->id.'" >edit</a></span>';
                 }
                 ?>
+                <span><a href="#" class="comment_add" data-parent-id="<?php echo $obj_comment->id; ?>">add reply</a></span>
             </p>
             <?php
             if(isset($obj_comment->children)){
