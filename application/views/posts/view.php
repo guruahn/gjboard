@@ -47,6 +47,9 @@ $obj_post = (object) $post;
                     <span><?php echo $obj_post->modify_date; ?></span>
                 </li>
             </ul>
+            <?php
+            if(is_login() && $_SESSION['LOGIN_ID'] == $obj_post->user_id){
+            ?>
             <a href="/posts/edit/<?php echo $obj_post->id?>">
                 <span>
                 edit this post
@@ -58,7 +61,7 @@ $obj_post = (object) $post;
                 Delete this post
                 </span>
             </a>
-
+            <?php }?>
             <a href="/posts/viewall/">
                 <span>
                 list post
