@@ -71,7 +71,7 @@ $obj_post = (object) $post;
                 <h3 id="reply-title" class="comment-reply-title">
                     Reply
                 </h3>
-                <form action="<?php echo _BASE_URL_;?>/comments/add/<?php echo $obj_post->id; ?>" method="post" id="commentform" class="comment-form">
+                <form action="<?php echo _BASE_URL_;?>/comments/add/<?php echo $obj_post->id; ?>" method="post" id="commentform" class="comment_form">
                     <?php
                     $type = "text";
                     if(is_login()) {
@@ -79,11 +79,11 @@ $obj_post = (object) $post;
                         $type = 'hidden';
                     }
                     ?>
-                    <input id="name" name="name" type="<?php echo $type;?>" placeholder="Name (required)" value="<?php echo (is_login() ? $_SESSION['LOGIN_NAME'] : "");?>" size="30" aria-required="true" />
-                    <input id="email" name="email" type="<?php echo $type;?>" placeholder="Email (required)" value="<?php echo (is_login() ? $_SESSION['LOGIN_EMAIL'] : "");?>" size="30" aria-required="true" />
+                    <input id="name" name="name" type="<?php echo $type;?>" placeholder="Name (required)" value="<?php echo (is_login() ? $_SESSION['LOGIN_NAME'] : "");?>" size="30"  />
+                    <input id="email" name="email" type="<?php echo $type;?>" placeholder="Email (required)" value="<?php echo (is_login() ? $_SESSION['LOGIN_EMAIL'] : "");?>" size="30" />
                     <input id="website" name="website" type="text" placeholder="Website" value="" size="30">
-                    <p class="comment-form-comment">
-                        <textarea id="content" placeholder="Comment..." name="content" cols="45" rows="8" aria-required="true"></textarea>
+                    <p class="comment_form_comment">
+                        <textarea id="content" placeholder="Comment..." name="content" cols="45" rows="8" ></textarea>
                     </p>
                     <p class="form-submit">
                         <input name="submit" type="submit" id="submit-comment" value="Submit">
@@ -97,16 +97,74 @@ $obj_post = (object) $post;
                 </form>
             </div>
             <div id="comment-list"></div>
+            <?php
+            if( is_login() ){
+            ?>
+            <div id="edit-comment-popup" style="display: none;">
+                <a href="#" class="b-close">close</a>
+                <form action="<?php echo _BASE_URL_;?>/comments/edit/" method="post" id="commentEditform" class="comment_edit_form">
+                    <h4>by <?php echo "by ".$_SESSION['LOGIN_NAME']; ?></h4>
+                    <input id="name" name="name" type="hidden" placeholder="Name (required)" value="<?php echo (is_login() ? $_SESSION['LOGIN_NAME'] : "");?>" size="30" />
+                    <input id="email" name="email" type="hidden" placeholder="Email (required)" value="<?php echo (is_login() ? $_SESSION['LOGIN_EMAIL'] : "");?>" size="30" />
+                    <input id="website" name="website" type="text" placeholder="Website" value="" size="30">
+                    <p class="comment_form_comment">
+                        <textarea id="content" placeholder="Comment..." name="content" cols="45" rows="8" ></textarea>
+                    </p>
+                    <p class="form-submit">
+                        <input name="submit" type="submit" id="submit-edit-comment" value="Submit">
+                        <input type="hidden" name="comment-id" value="" />
+                    </p>
+                </form>
+            </div><!--//#edit-comment-shell-->
+            <?php }?>
         </div><!--//#comment-->
     </div><!--//#wrapper-->
 
     <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="<?php echo _BASE_URL_;?>/public/js/jquery.bpopup.min.js"></script>
+    <script src="<?php echo _BASE_URL_;?>/public/js/functions.js"></script>
     <script>
         $(function(){
             getComments(<?php echo $obj_post->id?>, 1, "comment-list");
 
+            //comment edit form popup
+            $('#comment-list').on('click', '.comment_edit', function(){
+                var comment_id = $(this).attr('data-id');
+                var comment_obj = $('#comment-'+comment_id)
+                var comment_content = $(comment_obj).find('.comment').text();
+                var website = $(comment_obj).find('.user').attr('href');
+                popupEditComment(website, comment_id, comment_content);
+                return false;
+            });
+
+            //comment edit
+            $('#commentEditform').submit(function(){
+                var data = $(this).serializeArray();
+                //console.log(printr_json(postData));
+                var action = $(this).attr("action");
+                editComments(action, data);
+                return false;
+            });
+
         });
 
+        function popupEditComment(website, comment_id, comment_content){
+            $('#edit-comment-popup').bPopup({
+                closeClass:'b-close',
+                modalClose: false,
+                transitionClose: 'fadeIn',
+                speed: 250,
+                zIndex: 9000,
+                position :['auto','auto'],
+                follow: [false, false],
+                //positionStyle : 'absolute',
+                onOpen: function() {
+                    $('#edit-comment-popup input[name=comment-id]').val(comment_id);
+                    $('#edit-comment-popup input[name=website]').val(website);
+                    $('#edit-comment-popup textarea[name=content]').html(comment_content);
+                }
+            });
+        }
         function getComments(post_id, thispage, target){
             //console.log(data);
             $.ajax({
@@ -114,11 +172,30 @@ $obj_post = (object) $post;
                 url: "<?php echo _BASE_URL_;?>/comments/viewall/"+post_id+"/"+thispage,
                 dataType: "html"
             }).success(function( data ) {
-                    if(data){
-                        $('#'+target).html(data);
+                if(data){
+                    $('#'+target).html(data);
+                }
+            }).fail(function(response){
+                //console.log(printr_json(response));
+            });
+        }
+
+        function editComments(action, data){
+            //console.log(data);
+            $.ajax({
+                type: "POST",
+                url: action,
+                data: data,
+                dataType: "json"
+            }).success(function( data ) {
+                    if(data.result){
+                        getComments(<?php echo $obj_post->id?>, 1, "comment-list");
+                        $('#edit-comment-popup').bPopup().close();
+                    }else{
+                        alert(data.message);
                     }
                 }).fail(function(response){
-                    //console.log(printr_json(response));
+                    console.log(printr_json(response));
                 });
         }
 

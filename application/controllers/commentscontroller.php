@@ -79,4 +79,39 @@ class CommentsController extends Controller {
         }
     }
 
+    function edit() {
+
+        $result = array(
+            'result'=>0,
+            'message'=>'',
+            'comment'=>''
+        );
+        //Check login
+        if(!is_login()){
+            $result['message'] = 'After login you can use.';
+            echo json_encode($result);
+            exit;
+        }
+
+        $id = $_POST['comment-id'];
+
+        $comment = $this->Comment->getComment( "*", array("id"=>$id) );
+        //Check permissions
+        if($_SESSION['LOGIN_ID'] != $comment['user_id']){
+            $result['message'] = 'You do not have permission to access.';
+            echo json_encode($result);
+            exit;
+        }
+        $data = Array(
+            "name" => $_POST['name'],
+            "email" => $_POST['email'],
+            "website" => $_POST['website'],
+            "content" => $_POST['content']
+        );
+        if($comment){
+            $result['result'] = $this->Comment->updateComment($id, $data);
+        }
+        echo json_encode($result);
+    }
+
 }
