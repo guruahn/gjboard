@@ -24,12 +24,12 @@ class User extends Model {
             {
                 $this->where($key,$value);
             }
-            $post = $this->getOne("user", $column);
+            $user = $this->getOne("user", $column);
         }else{
-            $post = $this->get("user", $column);
+            $user = $this->get("user", $column);
 
         }
-        return	$post;
+        return	$user;
     }
 
    /*

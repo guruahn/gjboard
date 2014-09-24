@@ -11,6 +11,7 @@
  **/
 
 /** Check if environment is development and display errors **/
+$inflect = new Inflection();
 
 function setReporting() {
     if (DEVELOPMENT_ENVIRONMENT == true) {
@@ -60,6 +61,7 @@ function callHook() {
     global $url;
     global $is_API;
     global $is_MANAGER;
+    global $inflect;
 
     $urlArray = array();
     $urlArray = explode("/",$url);
@@ -85,7 +87,7 @@ function callHook() {
 
     $controllerName = $controller;
     $controller = ucwords($controller);
-    $model = rtrim($controller, 's');
+    $model = ucfirst($inflect->singularize($controller));
     $controller .= 'Controller';
     $dispatch = new $controller($model,$controllerName,$action);
 
@@ -101,7 +103,8 @@ function callHook() {
 function __autoload($className) {
     global $is_MANAGER;
     $controller_path = "";
-    if( $is_MANAGER ) $controller_path = "/manager";
+    if( $is_MANAGER ) $controller_path = DS ."manager";
+
     if (file_exists(ROOT . DS . 'library' . DS . strtolower($className) . '.class.php')) {
         require_once(ROOT . DS . 'library' . DS . strtolower($className) . '.class.php');
     } else if (file_exists(ROOT . DS . 'application' . DS . 'controllers' . $controller_path . DS . strtolower($className) . '.php')) {

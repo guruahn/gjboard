@@ -36,7 +36,14 @@ $obj_post = (object) $post;
             </li>
             <li>
                 <label for="category_id">category</label>
-                <input name="category_id" id="category_id" type="text" size="30" value="<?php echo $obj_post->category_id; ?>" />
+                <select name="category_id" id="category_id" >
+                    <?php
+                    foreach($categories as $category){
+                        $obj_category = (object) $category;
+                        echo '<option value="'.$obj_category->id.'">'.$obj_category->name."</option>";
+                    }
+                    ?>
+                </select>
             </li>
             <li>
                 <label for="content">content</label>
@@ -70,19 +77,19 @@ $obj_post = (object) $post;
 </div>
 
 
-<a href="/posts/delete/<?php echo $obj_post->id?>">
+<a href="<?php echo _BASE_URL_;?>/posts/delete/<?php echo $obj_post->id?>">
 	<span>
 	Delete this post
 	</span>
 </a>
 
-<a href="/posts/viewall/">
+<a href="<?php echo _BASE_URL_;?>/posts/view_all/">
     <span>
     list post
     </span>
 </a>
 
-<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+
 <!--froala editor js start http://editor.froala.com/-->
 <script src="<?php echo _BASE_URL_;?>/public/js/froala/libs/beautify/beautify-html.js"></script>
 <script src="<?php echo _BASE_URL_;?>/public/js/froala/froala_editor.min.js"></script>

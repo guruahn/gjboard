@@ -24,7 +24,7 @@ $obj_post = (object) $post;
                 </li>
                 <li>
                     <span>category : </span>
-                    <input name="category_id" id="category_id" type="text" size="30" value="<?php echo $obj_post->category_id; ?>" />
+                    <span><a href="<?php echo _BASE_URL_;?>/categories/post_list/"><?php echo $obj_post->category['name']; ?></a></span>
                 </li>
                 <li>
                     <span>content :</span>
@@ -50,19 +50,19 @@ $obj_post = (object) $post;
             <?php
             if(is_login() && $_SESSION['LOGIN_ID'] == $obj_post->user_id){
             ?>
-            <a href="/posts/edit/<?php echo $obj_post->id?>">
+            <a href="<?php echo _BASE_URL_;?>/posts/editForm/<?php echo $obj_post->id?>">
                 <span>
                 edit this post
                 </span>
             </a>
 
-            <a href="/posts/delete/<?php echo $obj_post->id?>">
+            <a href="<?php echo _BASE_URL_;?>/posts/delete/<?php echo $obj_post->id?>">
                 <span>
                 Delete this post
                 </span>
             </a>
             <?php }?>
-            <a href="/posts/viewall/">
+            <a href="<?php echo _BASE_URL_;?>/posts/view_all/">
                 <span>
                 list post
                 </span>
@@ -204,7 +204,7 @@ $obj_post = (object) $post;
             //console.log(data);
             $.ajax({
                 type: "POST",
-                url: "<?php echo _BASE_URL_;?>/comments/viewall/"+post_id+"/"+thispage,
+                url: "<?php echo _BASE_URL_;?>/comments/view_all/"+post_id+"/"+thispage,
                 dataType: "html"
             }).success(function( data ) {
                 if(data){

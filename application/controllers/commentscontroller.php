@@ -19,7 +19,7 @@ class CommentsController extends Controller {
         $this->set('comment',$comment);
     }
 
-    function viewall($post_id = null, $thispage=1) {
+    function view_all($post_id = null, $thispage=1) {
 
         if(is_null($thispage)) $thispage = 1;
         $limit = Array( ($thispage-1)*10, 10 );

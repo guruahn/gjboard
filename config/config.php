@@ -1,6 +1,6 @@
 <?php
 /**
- * Configuration
+ * Configuration Variables
  *
  * @category  Config
  * @package   Config
@@ -9,7 +9,6 @@
  * @license   http://opensource.org/licenses/gpl-3.0.html GNU Public License
  * @version   1.0
  **/
-/** Configuration Variables **/
 
 define ('DEVELOPMENT_ENVIRONMENT',true);
 

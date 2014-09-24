@@ -11,6 +11,8 @@
  **/
 session_start();
 require_once (ROOT . DS . 'config' . DS . 'config.php');
+require_once (ROOT . DS . 'config' . DS . 'inflection.php');
+require_once (ROOT . DS . 'library' . DS . 'inflection.class.php');
 require_once (ROOT . DS . 'library' . DS . 'functions.php');
 require_once (ROOT . DS . 'library' . DS . 'shared.php');
 

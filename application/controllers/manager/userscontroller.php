@@ -3,7 +3,7 @@
  * UsersController Class
  *
  * @category  Controller
- * @package   user
+ * @package   user manager
  * @author    Gongjam <guruahn@gmail.com>
  * @copyright Copyright (c) 2014
  * @license   http://opensource.org/licenses/gpl-3.0.html GNU Public License
@@ -23,7 +23,7 @@ class UsersController extends Controller {
     }
 
     function add() {
-        $referer = (isset($_POST['referer'])? $_POST['referer'] : _BASE_URL_."/posts/viewall" );
+        $referer = (isset($_POST['referer'])? $_POST['referer'] : _BASE_URL_."/posts/view_all" );
 
         if( !trim($_POST['name']) || !trim($_POST['user_id']) || !trim($_POST['password']) ){
             msg_page("Required fields are missing.");
@@ -56,7 +56,7 @@ class UsersController extends Controller {
 
     function login() {
         printr($_POST['referer']);
-        $referer = (isset($_POST['referer']) && !empty($_POST['referer']) ? $_POST['referer'] : _BASE_URL_."/manager/posts/viewall" );
+        $referer = (isset($_POST['referer']) && !empty($_POST['referer']) ? $_POST['referer'] : _BASE_URL_."/manager/posts/view_all" );
 
         if( !trim($_POST['user_id']) || !trim($_POST['password']) ){
             msg_page("Required fields are missing.");
@@ -95,7 +95,7 @@ class UsersController extends Controller {
     }
 
     function logout(){
-        $referer = (isset($_POST['referer'])? $_POST['referer'] : _BASE_URL_."/posts/viewall" );
+        $referer = (isset($_POST['referer'])? $_POST['referer'] : _BASE_URL_."/posts/view_all" );
         unset($_SESSION['LOGIN_NO']);
         unset($_SESSION['LOGIN_ID']);
         unset($_SESSION['LOGIN_NAME']);

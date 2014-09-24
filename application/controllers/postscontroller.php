@@ -17,11 +17,13 @@ class PostsController extends Controller {
         $post = $this->Post->getPost( "*", array("id"=>$id) );
         $user = new User();
         $post['user_name'] = $user->getUser("name",array('user_id'=>$post["user_id"]));
+        $category = new Category();
+        $post['category'] = $category->getCategory("*", array('id'=>$post['category_id']));
         $this->set('post',$post);
 
     }
 
-    function viewall($thispage=1) {
+    function view_all($thispage=1) {
         global $is_API;
         $result = array(
             'result'=>0,
@@ -62,7 +64,7 @@ class PostsController extends Controller {
             "title" => $title
         );
         $this->set('post',$this->Post->add($data));
-        redirect(_BASE_URL_."/posts/viewall");
+        redirect(_BASE_URL_."/posts/view_all");
     }
 
     function del($id = null) {
@@ -72,7 +74,7 @@ class PostsController extends Controller {
         }
 
         if( $this->Post->del($id) ){
-            msg_page('Success delete post.', _BASE_URL_."/posts/viewall");
+            msg_page('Success delete post.', _BASE_URL_."/posts/view_all");
             exit;
         }else{
             msg_page('Cannot delete this post.');
@@ -80,7 +82,7 @@ class PostsController extends Controller {
         }
     }
 
-    function edit($id = null) {
+    function editForm($id = null) {
         if(!is_login()){
             msg_page('After login you can use.', _BASE_URL_."/users/loginForm");
             exit;
@@ -88,10 +90,13 @@ class PostsController extends Controller {
 
         $this->set('title','Edit Post - GJboard App');
         $post = $this->Post->getPost( "*", array("id"=>$id) );
+        $category = new Category();
+        $categories = $category->getList( array('register_date'=>'asc'), "1000" );
         if($_SESSION['LOGIN_ID'] != $post['user_id']){
             msg_page('You do not have permission to access.', _BASE_URL_."/posts/view/".$id);
             exit;
         }
+        $this->set('categories', $categories);
         $this->set('post',$post);
     }
 
@@ -108,7 +113,7 @@ class PostsController extends Controller {
             "modify_date" => date("Y-m-d H:i:s",strtotime($_POST['modify_date']))
         );
         $this->Post->updatePost($id, $data);
-        redirect(_BASE_URL_."/posts/viewall");
+        redirect(_BASE_URL_."/posts/view_all");
     }
 
     function uploadFile($file = null) {

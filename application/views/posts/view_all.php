@@ -20,7 +20,7 @@
                 <a href="<?php echo _BASE_URL_;?>/posts/view/<?php echo $obj_post->id; ?>"><?php echo text_cut_utf8($obj_post->title, 70); ?></a>
             </h3>
             <p>
-                <span><a href="<?php echo _BASE_URL_;?>/posts/edit/<?php echo $obj_post->id; ?>">Edit</a></span>
+                <span><a href="<?php echo _BASE_URL_;?>/posts/editForm/<?php echo $obj_post->id; ?>">Edit</a></span>
                 <span><a href="<?php echo _BASE_URL_;?>/posts/del/<?php echo $obj_post->id; ?>">Delete</span>
             </p>
         <?php

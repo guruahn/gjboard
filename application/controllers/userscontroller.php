@@ -23,7 +23,7 @@ class UsersController extends Controller {
     }
 
     function add() {
-        $referer = (isset($_POST['referer'])? $_POST['referer'] : _BASE_URL_."/posts/viewall" );
+        $referer = (isset($_POST['referer'])? $_POST['referer'] : _BASE_URL_."/posts/view_all" );
 
         if( !trim($_POST['name']) || !trim($_POST['user_id']) || !trim($_POST['password']) ){
             msg_page("Required fields are missing.");
@@ -58,7 +58,7 @@ class UsersController extends Controller {
     }
 
     function login() {
-        $referer = (isset($_POST['referer'])? $_POST['referer'] : _BASE_URL_."/posts/viewall" );
+        $referer = (isset($_POST['referer'])? $_POST['referer'] : _BASE_URL_."/posts/view_all" );
 
         if( !trim($_POST['user_id']) || !trim($_POST['password']) ){
             msg_page("Required fields are missing.");
@@ -94,7 +94,7 @@ class UsersController extends Controller {
     }
 
     function logout(){
-        $referer = (isset($_POST['referer'])? $_POST['referer'] : _BASE_URL_."/posts/viewall" );
+        $referer = (isset($_POST['referer'])? $_POST['referer'] : _BASE_URL_."/posts/view_all" );
         unset($_SESSION['LOGIN_NO']);
         unset($_SESSION['LOGIN_ID']);
         unset($_SESSION['LOGIN_NAME']);

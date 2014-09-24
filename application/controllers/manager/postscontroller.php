@@ -21,30 +21,22 @@ class PostsController extends Controller {
 
     }
 
-    function viewall($thispage=1) {
-        global $is_API;
-        $result = array(
-            'result'=>0,
-            'message'=>'failed get feed',
-            'feed_list'=>''
-        );
-
+    function view_all($filter=null, $category_id = null, $thispage=1) {
+        $where = null;
         if(is_null($thispage)) $thispage = 1;
         $limit = array( ($thispage-1)*10, 10 );
 
-        $posts = $this->Post->getList( array('publish_date'=>'desc'), $limit );
-        $this->set('title','All Posts - GJboard Manager App');
+        $category = new Category();
+        $categories = $category->getList( array('register_date'=>'asc'), "1000" );
 
-        if(count($posts) > 0 ){
-            $result['result'] = 1;
-            $result['message'] = 'total '.count($posts).' posts';
-            $result['post_list'] = $posts;
+        if(!is_null($filter)){
+            $where = array( "category_id" => $category_id );
         }
-        if($is_API){
-            echo json_encode($result);
-        }else{
-            $this->set('posts',$posts);
-        }
+        $posts = $this->Post->getList( array('publish_date'=>'desc'), $limit, $where);
+        $this->set('title','All Posts - GJboard Manager App');
+        $this->set('categories',$categories);
+        $this->set('filter_category_id',$category_id);
+        $this->set('posts',$posts);
 
     }
 
@@ -58,14 +50,14 @@ class PostsController extends Controller {
             "title" => $title
         );
         $this->set('post',$this->Post->add($data));
-        redirect(_BASE_URL_."/posts/viewall");
+        redirect(_BASE_URL_."/posts/view_all");
     }
 
     function delete($id = null) {
         $this->set('result',$this->Item->query('delete from post where id = \''.mysql_real_escape_string($id).'\''));
     }
 
-    function edit($id = null) {
+    function editForm($id = null) {
         $this->set('title','Edit Post - GJboard App');
         $this->set('post',$this->Post->getPost( "*", array("id"=>$id) ));
     }
@@ -83,7 +75,7 @@ class PostsController extends Controller {
             "modify_date" => date("Y-m-d H:i:s",strtotime($_POST['modify_date']))
         );
         $this->Post->updatePost($id, $data);
-        redirect(_BASE_URL_."/posts/viewall");
+        redirect(_BASE_URL_."/posts/view_all");
     }
 
     function uploadFile($file = null) {

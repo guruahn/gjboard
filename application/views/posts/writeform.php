@@ -62,7 +62,7 @@
 
 
 
-<a href="<?=_BASE_URL_?>/posts/viewall">
+<a href="<?=_BASE_URL_?>/posts/view_all">
 	<span>
 	Posts list
 	</span>
